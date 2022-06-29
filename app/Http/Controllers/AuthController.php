@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Log;
-use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use  App\Models\User;
@@ -97,6 +95,8 @@ class AuthController extends Controller
         {
             return validationError($validator->errors());
         }
+
+
         try {
 
             $user =User::find($id);
@@ -110,7 +110,10 @@ class AuthController extends Controller
             $user->status = 1;
             $plainPassword = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
+
             $user->save();
+
+
             //return successful response
             return response()->json(['user' => $user, 'message' => 'Updated'], 201);
 
@@ -213,7 +216,7 @@ class AuthController extends Controller
 
         }
 
-//        return response()->json(['data' => $users, 'total' => $count]);
-        return view('users.index', $users);
+        return response()->json(['data' => $users, 'total' => $count]);
+
     }
 }
