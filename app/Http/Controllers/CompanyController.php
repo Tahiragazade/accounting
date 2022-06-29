@@ -22,20 +22,20 @@ class CompanyController extends Controller
     public function all(Request $request): JsonResponse
     {
         paginate($request, $limit, $offset);
-        $clientQuery = Company::query();
+        $companyQuery = Company::query();
 
         if($request->has('name')) {
-            $clientQuery->where('name', 'like', filter($request->get('name')));
+            $companyQuery->where('name', 'like', filter($request->get('name')));
         }
         if($request->has('voen')) {
-            $clientQuery->where('voen', 'like', filter($request->get('voen')));
+            $companyQuery->where('voen', 'like', filter($request->get('voen')));
         }
 
-        $count = $clientQuery->count();
-        $clients = $clientQuery->limit($request->get('limit'))->offset($request->get('offset'))->get();
+        $count = $companyQuery->count();
+        $companies = $companyQuery->limit($request->get('limit'))->offset($request->get('offset'))->get();
 
 
-        return response()->json(['data' => $clients, 'total' => $count]);
+        return response()->json(['data' => $companies, 'total' => $count]);
     }
     public function store(Request $request){
         if(checkRole()!=Roles::SYS_OWNER &&checkRole()!=Roles::COMPANY_OWNER){
@@ -65,8 +65,6 @@ class CompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'name'=>['string',Rule::unique('companies')->ignore($request->id)],
             'voen'=>['integer',Rule::unique('companies')->ignore($request->id)],
-
-
         ]);
 
         if ($validator->fails())
@@ -83,16 +81,16 @@ class CompanyController extends Controller
     public function tree(Request $request): JsonResponse
     {
         paginate($request, $limit, $offset);
-        $clientQuery = Company::query();
+        $companyQuery = Company::query();
 
         if($request->has('name')) {
-            $clientQuery->where('name', 'like', filter($request->get('name')));
+            $companyQuery->where('name', 'like', filter($request->get('name')));
         }
 
-        $count = $clientQuery->count();
-        $clients = $clientQuery->limit($request->get('limit'))->offset($request->get('offset'))->get();
+        $count = $companyQuery->count();
+        $companies = $companyQuery->limit($request->get('limit'))->offset($request->get('offset'))->get();
 
-        $data = simpleTree($clients);
+        $data = simpleTree($companies);
         return response()->json(['data' => $data, 'total' => $count]);
     }
     public function single($id){
